@@ -14,21 +14,21 @@ class Ball {
   int blue;
   ;  
   float weight = 1;
-  float friction = 0.12;
+  float friction = 0.1;
   float bounce = 1.6;
   float groundY;
   float rightWallX;
   float leftWallX;
 
-  Ball(float positionX, float positionY) {
-    this.positionX = positionX;
-    this.positionY = positionY;
+  Ball() {
+    this.positionX = mouseX;
+    this.positionY = mouseY;
     this.rolling = true;
     this.bouncing = true;
     this.red = randomColor();
     this.green = randomColor();
     this.blue = randomColor();
-    this.diameter = 10;
+    this.diameter = 20;
     this.setBoundaries();
   }
 

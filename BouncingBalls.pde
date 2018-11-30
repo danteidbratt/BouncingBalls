@@ -63,19 +63,33 @@ void drawBalls() {
 }
 
 void drawAim() {
-  strokeWeight(2);
+  strokeWeight(1);
   stroke(200);
   line(mouseX, mouseY, aimX, aimY);
+}
+
+void generateRandomBall() {
+  Ball randomBall = new Ball();
+  randomBall.speedY = (int) random(40) - 20;
+  randomBall.speedX = (int) random(40) - 20;
+  randomBall.diameter = (int) random(30) + 20;
+  balls.add(randomBall);
 }
 
 void mousePressed() {
   aimY = mouseY;
   aimX = mouseX;
-  nextBall = new Ball(mouseX, mouseY);
+  nextBall = new Ball();
 }
 
 void mouseReleased() {
   nextBall.speedY = (aimY - mouseY) / 5;
   nextBall.speedX = (aimX - mouseX) / 5;
   balls.add(nextBall);
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    generateRandomBall();
+  }
 }
