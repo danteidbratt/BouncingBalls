@@ -72,7 +72,7 @@ void generateRandomBall() {
   Ball randomBall = new Ball();
   randomBall.speedY = (int) random(40) - 20;
   randomBall.speedX = (int) random(40) - 20;
-  randomBall.diameter = (int) random(30) + 20;
+  randomBall.diameter = (int) random(60) + 20;
   balls.add(randomBall);
 }
 
