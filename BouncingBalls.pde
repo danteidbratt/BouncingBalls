@@ -1,17 +1,23 @@
 BallList balls = new BallList();
+int nextBallradius;
+Ball nextBall;
 int ballRadius = 20;
-int ground;
+int aimX;
+int aimY;
 
 void setup() {
   fullScreen();
   frameRate(80);
   stroke(255);
   strokeWeight(ballRadius * 2);
-  ground = height - ballRadius;
 }
 
 void draw() {
   background(20);
+  if (mousePressed) {
+    drawAim();
+    nextBall.hold();
+  }
   checkVerticalCollision();
   checkHorizontalCollision();
   applyGravity();
@@ -20,35 +26,27 @@ void draw() {
   drawBalls();
 }
 
-void generateBall() {
-  balls.add(new Ball(ballRadius, mouseX, mouseY, random(60) - 30, -random(30)));
-}
-
 void applyGravity() {
-  for (Ball ball: balls.getBouncing()) {
+  for (Ball ball : balls.getBouncing()) {
     ball.applyGravity();
   }
 }
 
 void applyFriction() {
-  for (Ball ball: balls.getRolling() ) {
-    ball.applyFriction(); 
+  for (Ball ball : balls.getRolling() ) {
+    ball.applyFriction();
   }
 }
 
 void checkVerticalCollision() {
-  for (Ball ball : balls) {
-    if (ball.positionY >= height - ballRadius) {
-      ball.bounceVertical();
-    }
+  for (Ball ball : balls.getBouncing()) {
+    ball.bounceVertical();
   }
 }
 
 void checkHorizontalCollision() {
-  for (Ball ball : balls) {
-    if (ball.positionX >= width - ballRadius || ball.positionX <= ballRadius) {
-      ball.bounceHorizontal();
-    }
+  for (Ball ball : balls.getMoving()) {
+    ball.bounceHorizontal();
   }
 }
 
@@ -59,11 +57,25 @@ void updatePositions() {
 }
 
 void drawBalls() {
-  for (Ball ball: balls) {
-    ball.place();
+  for (Ball ball : balls) {
+    ball.paint();
   }
 }
 
-void mouseClicked() {
-  generateBall();
+void drawAim() {
+  strokeWeight(2);
+  stroke(200);
+  line(mouseX, mouseY, aimX, aimY);
+}
+
+void mousePressed() {
+  aimY = mouseY;
+  aimX = mouseX;
+  nextBall = new Ball(mouseX, mouseY);
+}
+
+void mouseReleased() {
+  nextBall.speedY = (aimY - mouseY) / 5;
+  nextBall.speedX = (aimX - mouseX) / 5;
+  balls.add(nextBall);
 }

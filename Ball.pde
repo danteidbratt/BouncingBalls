@@ -1,7 +1,8 @@
 class Ball {
 
-  int radius;
-  int maxSpeed = 100;
+  int diameter;
+  int maxSpeed = 200;
+  int maxdiameter = 300;
   float positionX;
   float positionY;
   float speedX;
@@ -10,30 +11,27 @@ class Ball {
   boolean bouncing;
   int red;
   int green;
-  int blue;;  
+  int blue;
+  ;  
   float weight = 1;
-  float friction = 0.1;
-  float bounce = 1.9;
+  float friction = 0.12;
+  float bounce = 1.6;
+  float groundY;
+  float rightWallX;
+  float leftWallX;
 
-  Ball(
-    int radius, 
-    float positionX, 
-    float positionY, 
-    float speedX, 
-    float speedY
-    ) {
-    this.radius = radius;
+  Ball(float positionX, float positionY) {
     this.positionX = positionX;
     this.positionY = positionY;
-    this.speedX = speedX;
-    this.speedY = speedY;
     this.rolling = true;
     this.bouncing = true;
     this.red = randomColor();
     this.green = randomColor();
     this.blue = randomColor();
+    this.diameter = 10;
+    this.setBoundaries();
   }
-  
+
   private int randomColor() {
     return (int) random(255);
   }
@@ -55,31 +53,64 @@ class Ball {
   }
 
   void bounceVertical() {
-    applyFriction();
-    positionY = height - radius;
-    if (speedY < 2) {
-      bouncing = false;
-    } else {
-      speedY -= bounce * speedY;
+    if (positionY >= groundY) {
+      applyFriction();
+      positionY = groundY;
+      if (speedY < 5) {
+        bouncing = false;
+        speedY = 0;
+      } else {
+        speedY -= bounce * speedY;
+      }
     }
   }
 
   void bounceHorizontal() {
-    if (positionX <= 0) {
-      positionX = 1;
-    } else if (positionX >= width) {
-      positionX = width - 1;
+    if (positionX <= leftWallX) {
+      positionX = leftWallX;
+      mirrorX();
+    } else if (positionX >= rightWallX) {
+      positionX = rightWallX;
+      mirrorX();
     }
-    speedX -= 2 * speedX;
+  }
+  
+  private void mirrorX() {
+    speedX -= bounce * speedX;
   }
 
   void updatePosition() {
     positionX += speedX;
     positionY += speedY;
   }
-  
-  void place() {
+
+  void hold() {
+    this.grow();
+    this.drag();
+    this.paint();
+  }
+
+  void paint() {
     stroke(red, green, blue);
+    strokeWeight(diameter);
     point(positionX, positionY);
+  }
+
+  void grow() {
+    if (diameter < maxdiameter) {
+      this.diameter++;
+      this.setBoundaries();
+    }
+  }
+
+  void drag() {
+    this.positionX = mouseX;
+    this.positionY = mouseY;
+  }
+
+  void setBoundaries() {
+    this.groundY = height - diameter / 2;
+    this.leftWallX = diameter / 2;
+    this.rightWallX = width - diameter / 2;
   }
 }
